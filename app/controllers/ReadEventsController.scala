@@ -3,14 +3,17 @@ package controllers
 import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import javax.inject.{Inject, Singleton}
 
-import models.SensorEvent
-import play.api.libs.json.Json
+import models.{SensorEvent, SensorEventMongoReadsWrites}
 import play.api.mvc._
+import repository.EventRespoitory
+import play.api.libs.json.Json
+import reactivemongo.play.json._
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 @Singleton
-class ReadEventsController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class ReadEventsController @Inject()(cc: ControllerComponents, mongo: EventRespoitory) extends AbstractController(cc) {
 
   private val testModels = Seq[SensorEvent](
     SensorEvent(
@@ -51,9 +54,14 @@ class ReadEventsController @Inject()(cc: ControllerComponents) extends AbstractC
     )
   )
 
+  implicit val reads = SensorEventMongoReadsWrites.mongoReads
+  implicit val writes = SensorEventMongoReadsWrites.mongoWrites
+
   val readLatestEvents: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(Json.toJson(testModels)))
+      mongo.collection.flatMap(_.find(Json.obj()).cursor[SensorEvent]().collect[Seq]()).map {
+        allTheEvents => Ok(Json.toJson(allTheEvents))
+      }
   }
 
 }
