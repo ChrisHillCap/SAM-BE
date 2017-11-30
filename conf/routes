@@ -1,5 +1,6 @@
 
-GET     /sam-be/events/read/latest         controllers.ReadEventsController.readLatestEvents
+GET      /sam-be/events/read/latest         controllers.ReadEventsController.readLatestEvents
+POST     /sam-be/events/save/:id            controllers.SaveEventController.saveSingleEvent(id: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /sam-be/assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

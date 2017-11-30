@@ -11,23 +11,26 @@ class ReadEventsControllerSpec extends PlaySpec with GuiceOneAppPerTest with Inj
 
     "return Ok from a new instance of controller" in {
       val controller = new ReadEventsController(stubControllerComponents())
-      val home = controller.readLatestEvents().apply(FakeRequest(GET, "/"))
+      val readResult = controller.readLatestEvents().apply(FakeRequest(GET, "/"))
 
-      status(home) mustBe OK
+      status(readResult) mustBe OK
+      contentType(readResult) mustBe Some("application/json")
     }
 
     "return Ok from the application" in {
       val controller = inject[ReadEventsController]
-      val home = controller.readLatestEvents().apply(FakeRequest(GET, "/"))
+      val readResult = controller.readLatestEvents().apply(FakeRequest(GET, "/"))
 
-      status(home) mustBe OK
+      status(readResult) mustBe OK
+      contentType(readResult) mustBe Some("application/json")
     }
 
     "return Ok from the router" in {
       val request = FakeRequest(GET, "/sam-be/events/read/latest")
-      val home = route(app, request).get
+      val readResult = route(app, request).get
 
-      status(home) mustBe OK
+      status(readResult) mustBe OK
+      contentType(readResult) mustBe Some("application/json")
     }
   }
 }
