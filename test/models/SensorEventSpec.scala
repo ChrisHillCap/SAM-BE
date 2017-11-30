@@ -11,11 +11,13 @@ class SensorEventSpec extends PlaySpec {
     "read from Json" in {
       val json = Json.parse(
         """
-          |{
-          |  "id": "space-1",
-          |  "in": true,
-          |  "time": 1511701272000,
-          |  "reg": "MJ05KGZ"
+          |{"sensor":
+          | {
+          |   "id": "space-1",
+          |   "in": true,
+          |   "time": 1511701272000,
+          |   "reg": "MJ05KGZ"
+          | }
           |}
         """.stripMargin)
       val model = SensorEvent(
@@ -65,7 +67,7 @@ class SensorEventSpec extends PlaySpec {
         time = ZonedDateTime.of(LocalDateTime.of(2017,11,26,13,1,12), ZoneId.of("UTC")),
         reg = "MJ05KGZ"
       )
-      Json.fromJson[SensorEvent](json)(SensorEvent.mongoReads) mustBe JsSuccess(model)
+      Json.fromJson[SensorEvent](json)(SensorEventMongoReadsWrites.mongoReads) mustBe JsSuccess(model)
     }
 
     "write to mongo Json" in {
@@ -86,7 +88,7 @@ class SensorEventSpec extends PlaySpec {
         time = ZonedDateTime.of(LocalDateTime.of(2017,11,26,9,1,12), ZoneId.of("UTC")),
         reg = "MJ05KGZ"
       )
-      Json.toJson[SensorEvent](model)(SensorEvent.mongoWrites) mustBe json
+      Json.toJson[SensorEvent](model)(SensorEventMongoReadsWrites.mongoWrites) mustBe json
     }
   }
 
