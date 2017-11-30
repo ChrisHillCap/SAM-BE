@@ -42,10 +42,10 @@ object SensorEvent {
   }
 
   implicit val reads: Reads[SensorEvent] = (
-    (__ \ "id").read[String] and
-    (__ \ "in").read[Boolean] and
-    (__ \ "time").read[ZonedDateTime](dateTimeFromMillis) and
-    (__ \ "reg").read[String]
+    (__ \ "sensor" \"id").read[String] and
+    (__ \ "sensor" \"in").read[Boolean] and
+    (__ \ "sensor" \"time").read[ZonedDateTime](dateTimeFromMillis) and
+    (__ \ "sensor" \"reg").read[String]
   )(SensorEvent.apply _)
 
   implicit val writes: Writes[SensorEvent] = (
